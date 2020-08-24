@@ -1,4 +1,6 @@
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -8,71 +10,60 @@ import java.util.List;
 
 public class TesteCampoTreinamento {
 
-    @Test
-    public void testeCampo(){
+    private WebDriver driver;
+    private DSL dsl;
+
+    @Before
+    public void inicializa() {
         System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
+        driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("http://localhost/selenium/componentes.html");
-        Assert.assertEquals("Campo de Treinamento",driver.getTitle());
-        driver.findElement(By.id("elementosForm:nome")).sendKeys("Nome Teste");
-        Assert.assertEquals("Nome Teste",driver.findElement(By.id("elementosForm:nome")).getAttribute("value"));
+        dsl = new DSL(driver);
+    }
+
+    @After
+    public void finaliza() {
         driver.quit();
+    }
+
+    @Test
+    public void testeCampo(){
+        Assert.assertEquals("Campo de Treinamento",driver.getTitle());
+        dsl.escreve("elementosForm:nome","Nome Teste");
+        Assert.assertEquals("Nome Teste",driver.findElement(By.id("elementosForm:nome")).getAttribute("value"));
+        
     }
 
     @Test
     public void testeTextArea(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
-        driver.findElement(By.id("elementosForm:sugestoes")).sendKeys("Text Area Teste\nSegunda Linha\nTerceira Linha");
+        dsl.escreve("elementosForm:sugestoes","Text Area Teste\nSegunda Linha\nTerceira Linha");
         Assert.assertEquals("Text Area Teste\nSegunda Linha\nTerceira Linha",driver.findElement(By.id("elementosForm:sugestoes")).getAttribute("value"));
-        driver.quit();
     }
 
     @Test
     public void testeRadioButton(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
-        driver.findElement(By.id("elementosForm:sexo:0")).click();
+        dsl.clicaBotao("elementosForm:sexo:0");
         Assert.assertTrue(driver.findElement(By.id("elementosForm:sexo:0")).isSelected());
-        driver.quit();
     }
 
     @Test
     public void testeSelectionButton(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
-        driver.findElement(By.id("elementosForm:comidaFavorita:2")).click();
+        dsl.clicaBotao("elementosForm:comidaFavorita:2");
         Assert.assertTrue(driver.findElement(By.id("elementosForm:comidaFavorita:2")).isSelected());
-        driver.quit();
     }
 
     @Test
     public void testeComboBox(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         WebElement element = driver.findElement(By.id("elementosForm:escolaridade"));
         Select combo = new Select(element);
         combo.selectByVisibleText("2o grau incompleto");
         System.out.println(combo.getAllSelectedOptions());
         Assert.assertEquals("2o grau incompleto", combo.getFirstSelectedOption().getText());
-        driver.quit();
     }
 
     @Test
     public void testeValoresComboBox(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         WebElement element = driver.findElement(By.id("elementosForm:escolaridade"));
         Select combo = new Select(element);
         List<WebElement> options = combo.getOptions();
@@ -88,15 +79,10 @@ public class TesteCampoTreinamento {
             }
         }
         Assert.assertTrue(encontrou);
-        driver.quit();
     }
 
     @Test
     public void testeComboMultiplo(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         WebElement element = driver.findElement(By.id("elementosForm:esportes"));
         Select combo = new Select(element);
         List<WebElement> options = combo.getOptions();
@@ -114,67 +100,78 @@ public class TesteCampoTreinamento {
             }
         }
         Assert.assertTrue(encontrou);
-        driver.quit();
     }
 
     @Test
     public void testeBotaoMudancaNome(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
-        driver.findElement(By.id("buttonSimple")).click();
+        dsl.clicaBotao("buttonSimple");
         Assert.assertEquals("Obrigado!",driver.findElement(By.id("buttonSimple")).getAttribute("value"));
-        driver.quit();
     }
 
     @Test
     public void testeLink(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         driver.findElement(By.linkText("Voltar")).click();
-        Assert.assertEquals("Voltou!", driver.findElement(By.id("resultado")).getText());
-        driver.quit();
+        Assert.assertEquals("Voltou!", dsl.obterTexto("resultado"));
+        
     }
 
     @Test
     public void testeProcuraTextoNaPagina(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         Assert.assertTrue(driver.findElement(By.tagName("body"))
                 .getText().contains("Campo de Treinamento"));
-        driver.quit();
+        
     }
 
     @Test
     public void testeAlertSimples(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         driver.findElement(By.id("alert")).click();
         Alert alerta = driver.switchTo().alert();
         Assert.assertEquals("Alert Simples",alerta.getText());
         alerta.accept();
-        driver.quit();
+        
     }
 
     @Test
     public void testeAlertOpcao(){
-        System.setProperty("webdriver.chrome.driver", "C:/Users/luizc/Documents/Driver/chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("http://localhost/selenium/componentes.html");
         driver.findElement(By.id("confirm")).click();
         Alert alerta = driver.switchTo().alert();
         Assert.assertEquals("Confirm Simples",alerta.getText());
         alerta.dismiss();
         Assert.assertEquals("Negado",alerta.getText());
         alerta.accept();
-        driver.quit();
+        
+    }
+
+    @Test
+    public void testeFrame(){
+        driver.switchTo().frame("frame1");
+        dsl.clicaBotao("frameButton");
+
+        Alert alerta = driver.switchTo().alert();
+        Assert.assertEquals("Frame OK!", alerta.getText());
+        alerta.accept();
+
+        
+    }
+
+    @Test
+    public void testePopup(){
+        driver.findElement(By.id("buttonPopUpEasy")).click();
+        driver.switchTo().window("Popup");
+        driver.findElement(By.tagName("textarea")).sendKeys("Test\nTest2");
+        driver.close();
+        driver.switchTo().window("");
+        driver.findElement(By.tagName("textarea")).sendKeys("Test\nTest2");
+        
+    }
+
+    @Test
+    public void testePopupSemTitulo(){
+        driver.findElement(By.id("buttonPopUpHard")).click();
+        driver.switchTo().window((String) driver.getWindowHandles().toArray()[1]);
+        driver.findElement(By.tagName("textarea")).sendKeys("Test\nTest2");
+        driver.switchTo().window("");
+        driver.findElement(By.tagName("textarea")).sendKeys("Test\nTest2");
+        
     }
 }
