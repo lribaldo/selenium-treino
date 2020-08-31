@@ -20,4 +20,9 @@ public class DSL {
     public String obterTexto(String campo){
         return driver.findElement(By.id(campo)).getText();
     }
+
+    public void  (String nome) {
+        String path = ".//table[@id='elementosForm:tableUsuarios']//td[.='" +nome+ "']/..//input[1]";
+        driver.findElement(By.xpath(path)).click();
+    }
 }

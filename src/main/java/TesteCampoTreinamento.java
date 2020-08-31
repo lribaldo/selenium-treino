@@ -24,7 +24,7 @@ public class TesteCampoTreinamento {
 
     @After
     public void finaliza() {
-        driver.quit();
+        //driver.quit();
     }
 
     @Test
@@ -173,5 +173,10 @@ public class TesteCampoTreinamento {
         driver.switchTo().window("");
         driver.findElement(By.tagName("textarea")).sendKeys("Test\nTest2");
         
+    }
+
+    @Test
+    public void clicarBotaoTabela(){
+        dsl.clicarBotaoTabela("Maria");
     }
 }
