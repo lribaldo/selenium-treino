@@ -17,12 +17,19 @@ public class DSL {
         driver.findElement(By.id(campo)).click();
     }
 
+    public void clicaBotao(By by){
+        driver.findElement(by).click();
+    }
+
     public String obterTexto(String campo){
         return driver.findElement(By.id(campo)).getText();
     }
 
-    public void  (String nome) {
+    public void  clicarBotaoTabela (String nome) {
         String path = ".//table[@id='elementosForm:tableUsuarios']//td[.='" +nome+ "']/..//input[1]";
         driver.findElement(By.xpath(path)).click();
     }
+
+    /***************  SINCRONISMO  **************/
+
 }
